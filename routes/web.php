@@ -1,7 +1,10 @@
 <?php
 
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
+
 
 Route::get('/', function () {
     return view('home', ['title' => 'Home Page']);
@@ -12,54 +15,15 @@ Route::get('/about', function () {
 });
 
 Route::get('/posts', function () {
-    return view('posts', ['title' => 'Blog', 'posts' => [
-        [
-            'id' => 1,
-            'slug' => 'mengapa-manusia-lapar',
-            'title' => 'Mengapa Manusia Lapar?',
-            'author' => 'Sauqi Khatami',
-            'body' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis, nihil,
-            fugit exercitationem similique repellendus repudiandae distinctio nostrum ab vel corrupti nam,
-            voluptatibus suscipit nobis! Quod aperiam vel quisquam repellat nulla'
-        ],
-        [
-            'id' => 2,
-            'title' => 'Mengapa Manusia Haus?',
-            'slug' => 'mengapa-manusia-haus',
-            'author' => 'Sauqi Khatami',
-            'body' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Voluptatum fuga dicta at numquam repellat qui in labore quas, dolorum, atque perspiciatis ipsum,
-            quisquam magni! Obcaecati unde et perferendis deleniti natus'
-        ]
-    ]]);
+    return view('posts', ['title' => 'Blog', 'posts' => Post::all()]);
 });
 
-Route::get('/posts/{slug}', function($slug){
-    $posts = [
-        [
-            'id' => 1,
-            'slug' => 'mengapa-manusia-lapar',
-            'title' => 'Mengapa Manusia Lapar?',
-            'author' => 'Sauqi Khatami',
-            'body' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis, nihil,
-            fugit exercitationem similique repellendus repudiandae distinctio nostrum ab vel corrupti nam,
-            voluptatibus suscipit nobis! Quod aperiam vel quisquam repellat nulla'
-        ],
-        [
-            'id' => 2,
-            'title' => 'Mengapa Manusia Haus?',
-            'slug' => 'mengapa-manusia-haus',
-            'author' => 'Sauqi Khatami',
-            'body' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Voluptatum fuga dicta at numquam repellat qui in labore quas, dolorum, atque perspiciatis ipsum,
-            quisquam magni! Obcaecati unde et perferendis deleniti natus'
-        ]
-    ];
-
-    $post = Arr::first($posts, function($post) use ($slug) {
-        return $post['slug'] == $slug;
-    });
+Route::get('/posts/{post:slug}', function(Post $post){
     return view('post', ['title' => 'Single Post', 'post' => $post]);
+});
+
+Route::get('/authors/{user}', function(User $user){
+    return view('posts', ['title' => 'Articles by ' . $user->name, 'posts' => $user->posts]);
 });
 
 Route::get('/contact', function () {
